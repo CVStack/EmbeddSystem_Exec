@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include <sys/un.h>
 
-#define PORTNUM 1
+#define PORTNUM 9000
 
 int main()
 {
