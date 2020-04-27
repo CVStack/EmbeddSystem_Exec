@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include <sys/un.h>
 
-#define PORTNUM 1
+#define PORTNUM 9000
 
 int main()
 {
@@ -24,7 +24,7 @@ int main()
     memset((char *) &sin, '\0', sizeof(sin)); // '\0'으로 초기화
     sin.sin_family = AF_INET;
     sin.sin_port = htons(PORTNUM); //host to network --> byte ordering 
-    sin.sin_addr.s_addr = inet_addr("172.17.0.2"); // string -> ip, open to anyway
+    sin.sin_addr.s_addr = inet_addr("ip"); // string -> ip, open to anyway
 
     if(connect(sd,(struct sockaddr *) &sin, sizeof(struct sockaddr))) { // server에서 accpet하고 send함
         perror("connect");
