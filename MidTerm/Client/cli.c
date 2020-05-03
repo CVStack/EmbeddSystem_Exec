@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <pthread.h>
+#include "Server.h"
 
 #define BUFSIZE 100
 #define NAMESIZE 20
@@ -36,22 +29,23 @@ int main (int argc, char **argv)
 
 	sprintf (name, "[%s]", argv[3]);
 
-	sock = socket (PF_INET, SOCK_STREAM, 0);
+	sock = socket (PF_INET, SOCK_STREAM, 0); // 소켓 생성 (internet, TCP/IP, protocal)
 	if (sock == -1)
 		error_handling ("socket() error");
 
-	memset (&serv_addr, 0, sizeof (serv_addr));
+	memset (&serv_addr, 0, sizeof (serv_addr)); //소켓 초기화
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = inet_addr (argv[1]);
 	serv_addr.sin_port = htons (atoi (argv[2]));
 
-	if (connect (sock, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) == -1)
+	if (connect (sock, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) == -1) //connection 생성
 		error_handling ("connect() error");
 
-	pthread_create (&snd_thread, NULL, send_message, (void *) sock);
+	pthread_create (&snd_thread, NULL, send_message, (void *) sock); //thread 생성 후 실행
 	pthread_create (&rcv_thread, NULL, recv_message, (void *) sock);
+	//두개의 thread concurrent하게 동작
 
-	pthread_join (snd_thread, &thread_result);
+	pthread_join (snd_thread, &thread_result); //pthread_join --> 해당 스레드가 종료될때까지 대기
 	pthread_join (rcv_thread, &thread_result);
 
 	close (sock);

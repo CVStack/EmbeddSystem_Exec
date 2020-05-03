@@ -54,22 +54,21 @@ int main()
         exit(1);
     } 
     
-    if(listen(sd,5)) {
+    if(listen(sd,5)) { //client가 server에 접속하면 listen부터 시행
 
         perror("listen");
         exit(1);
     }
 
-    while(1) {
 
-        pthread_mutex_lock(&m_lock);
+    while(1) {
         ns = (int *) malloc(sizeof(int));
+        printf("client listen comming\n");
         if((*ns = accept(sd,(struct sockaddr *) &cli, &clientlen)) == -1) { //client가 들어올때 accept return 됨
             perror("accept");
             exit(1);
-        }
+        } //client accpet가 끝나면 반복
         pthread_create(&tid, NULL, sender, ns);
-        pthread_mutex_unlock(&m_lock);
     }
 
     return 0;
